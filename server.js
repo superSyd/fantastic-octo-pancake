@@ -3,6 +3,7 @@ require('dotenv').config();
 const express     = require('express');
 const bodyParser  = require('body-parser');
 const cors        = require('cors');
+const helmet = require("helmet");
 
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
@@ -14,6 +15,17 @@ const myPORT = process.env['PORT']
 
 const myNODE_ENV = process.env['NODE_ENV']
 
+app.use(helmet.dnsPrefetchControl({
+  allow: false
+}))
+app.use(helmet.frameguard({
+  action: "sameorigin"
+}));
+app.use(
+  helmet.referrerPolicy({
+    policy: "same-origin"
+  })
+);
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
@@ -27,6 +39,7 @@ app.route('/b/:board/')
   .get(function (req, res) {
     res.sendFile(process.cwd() + '/views/board.html');
   });
+
 app.route('/b/:board/:threadid')
   .get(function (req, res) {
     res.sendFile(process.cwd() + '/views/thread.html');

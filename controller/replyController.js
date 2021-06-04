@@ -4,23 +4,23 @@ const db = new DB()
 
 class Reply{
 
-  getThreadReplies(threadId, res){
-    db.getThreadReplies(threadId, res)
+  async getThreadReplies(threadId, res){
+    await db.getThreadReplies(threadId, res)
 
   }
 
-  create(boardName, threadId, threadText, password, res){
-    db.createReply(boardName, threadId, threadText, password, res)
+  async create(boardName, threadId, threadText, password, res){
+    await db.createReply(boardName, threadId, threadText, password, res)
 
   }
 
-  update(boardName, threadId, replyId, res){
-    db.updateReply(boardName, threadId, replyId, res)
+  async update(boardName, threadId, replyId, res){
+    await db.updateReply(boardName, threadId, replyId, res)
 
   }
 
-  delete(boardName, threadId, replyId, password, res){
-    db.deleteReply(boardName, threadId, replyId, password, res)
+  async delete(boardName, threadId, replyId, password, res){
+    await db.deleteReply(boardName, threadId, replyId, password, res)
   }
 
 }

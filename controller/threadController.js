@@ -5,22 +5,22 @@ const db = new DB()
 class Thread{
 
   //getThread
-  getRecentThreads(res){
-    db.getRecentThread(res)
+  async getRecentThreads(res){
+    await db.getRecentThread(res)
   }
 
-  create(boardName, threadText, passwordDelete, res){
-    db.createThread(boardName, threadText, passwordDelete, res)
-
-  }
-
-  update(boardName, threadId, res){
-    db.updateThread(boardName, threadId, res)
+  async create(boardName, threadText, passwordDelete, res){
+    await db.createThread(boardName, threadText, passwordDelete, res)
 
   }
 
-  delete(boardName, threadId, password, res){
-    db.deleteThread(boardName, threadId, password, res)
+  async update(boardName, threadId, res){
+    await db.updateThread(boardName, threadId, res)
+
+  }
+
+  async delete(boardName, threadId, password, res){
+    await db.deleteThread(boardName, threadId, password, res)
 
   }
 

@@ -1,32 +1,36 @@
 'use strict';
 
-const Reply = require('../controller/replyController.js');
-const Thread = require('../controller/threadController.js');
+const MessageBoardController = require('../controller/messageBoardController.js');
 
 module.exports = function (app) {
 
-  const thread = new Thread()
-  const reply = new Reply()
+  const messageBoard = new MessageBoardController()
+
+  
 
   //get thread
   app.route('/api/threads/:board')
-  .get((req,res) => {
-    thread.getRecentThreads(res)
+  .get(async (req,res) => {
+    
+    let boardName = req.params.board
+
+    await messageBoard.getRecentThread(boardName, res)
   })
   
   app.route('/api/threads/:board')
-  .post((req,res) =>{
+  .post(async (req,res) =>{
     //create new thread
 
-    let boardName = req.body.board
+    let boardName = req.params.board
     let threadText = req.body.text
     let passwordDelete = req.body.delete_password
 
     if(threadText && passwordDelete){
-      thread.create(boardName, threadText, passwordDelete, res)
 
+      await messageBoard.createThread(boardName, threadText, passwordDelete, res)
+      
     } else {
-      res.send("Please enter field(s)")
+      return res.send("Please enter field(s)")
     }
 
   });
@@ -34,98 +38,102 @@ module.exports = function (app) {
   
   //report thread
   app.route('/api/threads/:board')
-  .put((req,res) =>{
+  .put(async (req,res) =>{
 
-    let boardName = req.body.board
+    let boardName = req.params.board
     let threadId = req.body.thread_id
 
     if(threadId){
-      thread.update(boardName, threadId, res)
+      await messageBoard.updateThread(boardName, threadId, res)
 
     } else {
-      res.send("Please enter field(s)")
+      return res.send("Please enter field(s)")
     }
 
   });
   //delete thread
   app.route('/api/threads/:board')
-  .delete((req,res) =>{
+  .delete(async (req,res) =>{
 
-    let boardName = req.body.board
+    let boardName = req.params.board
     let threadId = req.body.thread_id
     let password = req.body.delete_password
 
     if(threadId && password){
-      thread.delete(boardName, threadId, password, res)
+      await messageBoard.deleteThread(boardName, threadId, password, res)
 
     } else {
-      res.send("Please enter field(s)")
+      return res.send("Please enter field(s)")
     }
 
   });
     
   app.route('/api/replies/:board')
-  .post((req,res) =>{
+  .post(async (req,res) =>{
     //create new reply
 
-    let boardName = req.body.board
+    //console.log(req.params.board, "HERE")
+
+    let boardName = req.params.board
     let threadId = req.body.thread_id
     let threadText = req.body.text
     let password = req.body.delete_password
 
     if( threadId && threadText && password){
-      reply.create(boardName, threadId, threadText, password, res)
+      await messageBoard.createReply(boardName, threadId, threadText, password, res)
 
     } else {
-      res.send("Please enter field(s)")
+      return res.send("Please enter field(s)")
     }
 
   });
   //report reply
   app.route('/api/replies/:board')
-  .put((req,res) =>{
+  .put(async (req,res) =>{
 
-    let boardName = req.body.board
+    let boardName = req.params.board
     let threadId = req.body.thread_id
     let replyId = req.body.reply_id
 
-    if( threadId && threadText && password){
-      reply.update(boardName, threadId, replyId, res)
+    if( threadId && replyId && password){
+      await messageBoard.updateReply(boardName, threadId, replyId, res)
 
     } else {
-      res.send("Please enter field(s)")
+      return res.send("Please enter field(s)")
     }
 
   });
   //delete reply
   app.route('/api/replies/:board')
-  .delete((req,res) =>{
+  .delete(async (req,res) =>{
 
-    let boardName = req.body.board
+    let boardName = req.params.board
     let threadId = req.body.thread_id
     let replyId = req.body.reply_id
     let password = req.body.delete_password
 
 
-    if( threadId && threadText && password){
-      reply.delete(boardName, threadId, replyId, password, res)
+    if( threadId && replyId && password){
+      await messageBoard.deleteReply(boardName, threadId, replyId, password, res)
 
     } else {
-      res.send("Please enter field(s)")
+      return res.send("Please enter field(s)")
     }
 
   });
 
   //get thread id
-  app.route('/api/replies/{board}')
-  .get((req,res) => {
+  app.route('/api/replies/:board')
+  .get(async (req,res) => {
+    //console.log(req.url, "here")
     let threadId = req.query.thread_id
+    let boardName = req.params.board
 
     if(threadId){
-      reply.getThreadReplies(threadId, res)
+      await messageBoard.getThreadReplies(boardName,threadId, res)
 
     } else {
-      res.send("Please enter threadId value")
+      return res.send("Please enter threadId value")
     }
 
     
